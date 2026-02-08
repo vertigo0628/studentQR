@@ -12,6 +12,10 @@
             "dest": "/uploads/$1"
         },
         {
+            "src": "/(.*\\.(html|css|js|png|jpg|jpeg|svg|ico))$",
+            "dest": "/$1"
+        },
+        {
             "src": "/(.*)",
             "dest": "server.js"
         }
