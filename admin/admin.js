@@ -20,7 +20,7 @@ const compressionValueDisplay = document.getElementById('compressionValue');
 let originalFile = null;
 
 // Update compression value display
-imageQualitySlider.addEventListener('input', function() {
+imageQualitySlider.addEventListener('input', function () {
     compressionValueDisplay.textContent = this.value + '%';
 });
 
@@ -32,15 +32,15 @@ function formatFileSize(bytes) {
 }
 
 // Image preview functionality
-imageInput.addEventListener('change', function() {
+imageInput.addEventListener('change', function () {
     if (this.files && this.files[0]) {
         const file = this.files[0];
         originalFile = file;
         fileName.textContent = file.name + ` (${formatFileSize(file.size)})`;
-        
+
         // Preview image
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width:150px; border-radius:8px;">`;
         };
         reader.readAsDataURL(file);
@@ -55,7 +55,7 @@ imageInput.addEventListener('change', function() {
 function showStatus(message, type) {
     statusDiv.textContent = message;
     statusDiv.className = 'status ' + type;
-    
+
     // Hide status message after 5 seconds unless it's an error
     if (type !== 'error') {
         setTimeout(() => {
@@ -65,7 +65,7 @@ function showStatus(message, type) {
 }
 
 // Form submission handler
-uploadForm.addEventListener('submit', async function(e) {
+uploadForm.addEventListener('submit', async function (e) {
     e.preventDefault();
 
     // Validate inputs
@@ -125,12 +125,12 @@ uploadForm.addEventListener('submit', async function(e) {
         if (formMode === 'edit') {
             // For update, you might need to adjust your server code accordingly.
             const id = this.getAttribute('data-id');
-            response = await fetch(`http://localhost:5002/update-student/${id}`, {
+            response = await fetch(`/update-student/${id}`, {
                 method: 'PUT',
                 body: formData
             });
         } else {
-            response = await fetch('http://localhost:5002/add-student', {
+            response = await fetch('/add-student', {
                 method: 'POST',
                 body: formData
             });
@@ -161,7 +161,7 @@ uploadForm.addEventListener('submit', async function(e) {
 // Update student function (for editing via FormData) can be adjusted similarly if needed.
 async function updateStudent(studentId, formData) {
     try {
-        const response = await fetch(`http://localhost:5002/update-student/${studentId}`, {
+        const response = await fetch(`/update-student/${studentId}`, {
             method: 'PUT',
             body: formData
         });
@@ -184,7 +184,7 @@ let allStudents = [];
 // Fetch students function with pagination support
 async function fetchStudents() {
     try {
-        const response = await fetch('http://localhost:5002/get-students');
+        const response = await fetch('/get-students');
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -202,33 +202,33 @@ async function fetchStudents() {
 function updatePagination() {
     const totalStudents = allStudents.length;
     const totalPages = Math.ceil(totalStudents / recordsPerPage);
-    
+
     // Update text info
     document.getElementById('total-records').textContent = totalStudents;
     const startRecord = totalStudents === 0 ? 0 : (currentPage - 1) * recordsPerPage + 1;
     const endRecord = Math.min(currentPage * recordsPerPage, totalStudents);
     document.getElementById('start-record').textContent = startRecord;
     document.getElementById('end-record').textContent = endRecord;
-    
+
     // Generate page number buttons
     const pageNumbers = document.getElementById('page-numbers');
     pageNumbers.innerHTML = '';
-    
+
     // Determine range of page numbers to display
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, startPage + 4);
-    
+
     if (endPage - startPage < 4) {
         startPage = Math.max(1, endPage - 4);
     }
-    
+
     // Add first page if not in range
     if (startPage > 1) {
         const firstPageBtn = document.createElement('button');
         firstPageBtn.textContent = '1';
         firstPageBtn.addEventListener('click', () => goToPage(1));
         pageNumbers.appendChild(firstPageBtn);
-        
+
         if (startPage > 2) {
             const ellipsis = document.createElement('span');
             ellipsis.textContent = '...';
@@ -236,7 +236,7 @@ function updatePagination() {
             pageNumbers.appendChild(ellipsis);
         }
     }
-    
+
     // Add page numbers
     for (let i = startPage; i <= endPage; i++) {
         const pageBtn = document.createElement('button');
@@ -247,7 +247,7 @@ function updatePagination() {
         pageBtn.addEventListener('click', () => goToPage(i));
         pageNumbers.appendChild(pageBtn);
     }
-    
+
     // Add last page if not in range
     if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
@@ -256,21 +256,21 @@ function updatePagination() {
             ellipsis.className = 'page-ellipsis';
             pageNumbers.appendChild(ellipsis);
         }
-        
+
         const lastPageBtn = document.createElement('button');
         lastPageBtn.textContent = totalPages;
         lastPageBtn.addEventListener('click', () => goToPage(totalPages));
         pageNumbers.appendChild(lastPageBtn);
     }
-    
+
     // Update prev/next buttons
     document.getElementById('prev-page').disabled = currentPage === 1;
     document.getElementById('next-page').disabled = currentPage === totalPages;
-    
+
     // Add event listeners to prev/next buttons
     document.getElementById('prev-page').onclick = () => goToPage(currentPage - 1);
     document.getElementById('next-page').onclick = () => goToPage(currentPage + 1);
-    
+
     // Show empty state if no students
     document.getElementById('empty-state').style.display = totalStudents === 0 ? 'block' : 'none';
 }
@@ -288,33 +288,33 @@ function displayStudents() {
         console.error('Table body element not found!');
         return;
     }
-    
+
     if (allStudents.length === 0) {
         studentsList.innerHTML = '<tr><td colspan="8">No students found.</td></tr>';
         return;
     }
-    
+
     // Calculate slice for current page
     const start = (currentPage - 1) * recordsPerPage;
     const end = start + recordsPerPage;
     const paginatedStudents = allStudents.slice(start, end);
-    
+
     let html = '';
-    
+
     paginatedStudents.forEach(student => {
         // Truncate long strings
-        const truncatedEmail = student.email.length > 25 ? 
-            student.email.substring(0, 12) + '...' + student.email.substring(student.email.indexOf('@')) : 
+        const truncatedEmail = student.email.length > 25 ?
+            student.email.substring(0, 12) + '...' + student.email.substring(student.email.indexOf('@')) :
             student.email;
-        
-        const truncatedName = student.name.length > 20 ? 
-            student.name.substring(0, 17) + '...' : 
+
+        const truncatedName = student.name.length > 20 ?
+            student.name.substring(0, 17) + '...' :
             student.name;
-            
-        const truncatedCourse = student.course.length > 20 ? 
-            student.course.substring(0, 17) + '...' : 
+
+        const truncatedCourse = student.course.length > 20 ?
+            student.course.substring(0, 17) + '...' :
             student.course;
-        
+
         html += `
             <tr>
                 <td class="student-id">${student.studentId}</td>
@@ -352,9 +352,9 @@ function displayStudents() {
             </tr>
         `;
     });
-    
+
     studentsList.innerHTML = html;
-    
+
     // Generate QR codes after rendering (if needed)
     // This is removed from the main display for a cleaner table
     // You can add a QR view in the view student modal instead
@@ -365,7 +365,7 @@ function viewStudent(studentId) {
     // Find student from allStudents array
     const student = allStudents.find(s => s._id === studentId);
     if (!student) return;
-    
+
     // Generate QR code data
     const qrData = JSON.stringify({
         studentId: student.studentId,
@@ -374,11 +374,11 @@ function viewStudent(studentId) {
         course: student.course,
         imageUrl: student.image
     });
-    
+
     // Here you would open a modal with student details and QR code
     // For now just show an alert
     alert(`Viewing student: ${student.name}\nQR data contains student details`);
-    
+
     // In a real implementation, you would open a modal with:
     // - Student full details
     // - QR code generated with the qrData
@@ -388,24 +388,24 @@ function viewStudent(studentId) {
 // Edit student function
 async function editStudent(studentId) {
     try {
-        const response = await fetch(`http://localhost:5002/get-student/${studentId}`);
+        const response = await fetch(`/get-student/${studentId}`);
         const student = await response.json();
-        
+
         // Fill the form with student data
         nameInput.value = student.name;
         studentIdInput.value = student.studentId;
         emailInput.value = student.email;
         courseInput.value = student.course;
         yearInput.value = student.year;
-        
+
         // Update form action and button text for editing
         uploadForm.setAttribute('data-mode', 'edit');
         uploadForm.setAttribute('data-id', studentId);
-        
+
         if (student.image) {
             imagePreview.innerHTML = `<img src="${student.image}" alt="Preview" style="max-width:150px; border-radius:8px;">`;
         }
-        
+
         submitBtn.textContent = 'Update Student';
     } catch (error) {
         console.error('Error loading student data:', error);
@@ -418,15 +418,15 @@ async function deleteStudent(studentId) {
     if (!confirm('Are you sure you want to delete this student?')) {
         return;
     }
-    
+
     try {
-        const response = await fetch(`http://localhost:5002/delete-student/${studentId}`, {
+        const response = await fetch(`/delete-student/${studentId}`, {
             method: 'DELETE'
         });
-        
+
         const result = await response.json();
         showStatus(result.message, 'success');
-        
+
         // Refresh the students list
         fetchStudents();
     } catch (error) {

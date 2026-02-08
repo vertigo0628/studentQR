@@ -111,6 +111,7 @@ const upload = multer({
 });
 
 app.use('/uploads', express.static('uploads'));
+app.use(express.static(path.join(__dirname))); // Serve all static files from root
 
 function logEvent(type, message, details = {}) {
   const timestamp = new Date().toISOString();
