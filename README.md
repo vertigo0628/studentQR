@@ -61,8 +61,9 @@ with Cloudinary integration for image hosting in the cloud.
    ````
 3. **Configure Environment variables:**
    ```properties
-   # MongoDB connection string
-   MONGO_URI=mongodb://localhost:27017/mustid
+   # Supabase configuration
+   SUPABASE_URL=your_supabase_url
+   SUPABASE_KEY=your_supabase_service_role_key
 
    # Cloudinary configuration
    CLOUD_NAME=your_cloud_name
@@ -74,7 +75,6 @@ with Cloudinary integration for image hosting in the cloud.
 
    # Server port
    PORT=5002
- 
    ````
 
 4. **Start the server**
